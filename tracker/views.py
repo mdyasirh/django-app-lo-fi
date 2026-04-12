@@ -95,7 +95,7 @@ def login_view(request):
             if is_hr(user):
                 return redirect("hr_dashboard")
             return redirect("punch_clock")
-        error = "Invalid credentials."
+        error = "Ungültige Anmeldedaten."
     return render(request, "login.html", {"error": error})
 
 

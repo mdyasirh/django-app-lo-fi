@@ -1,29 +1,50 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-  <div class="col-md-5">
-    <div class="card shadow p-4">
-      <h3 class="text-center mb-4 text-light" data-en="Employee Login" data-de="Mitarbeiter-Login">Mitarbeiter-Login</h3>
+<section style="display:flex; justify-content:center; margin-top:40px;">
+  <div style="width:100%; max-width:440px;">
+    <div class="wf-card">
+      <h3 style="text-align:center; margin-bottom:20px;" data-en="Employee Login" data-de="Mitarbeiter-Anmeldung">Mitarbeiter-Anmeldung</h3>
 
       {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
+        <div class="wf-alert wf-alert-error" data-en="Invalid credentials." data-de="Ungültige Anmeldedaten.">{{ error }}</div>
       {% endif %}
 
       <form method="post" id="loginForm">
         {% csrf_token %}
-        <div class="mb-3">
-          <label class="form-label text-light" data-en="Username" data-de="Benutzername">Benutzername</label>
-          <input type="text" name="username" class="form-control bg-dark text-light border-secondary" required autofocus>
+        <div style="margin-bottom:14px;">
+          <label class="wf-label" data-en="Username" data-de="Benutzername">Benutzername</label>
+          <input type="text" name="username" class="wf-input" required autofocus>
         </div>
-        <div class="mb-3">
-          <label class="form-label text-light" data-en="PIN / Password" data-de="PIN / Passwort">PIN / Passwort</label>
-          <input type="password" name="password" id="pinField" class="form-control bg-dark text-light border-secondary" required>
+        <div style="margin-bottom:18px;">
+          <label class="wf-label" data-en="PIN / Password" data-de="PIN / Passwort">PIN / Passwort</label>
+          <input type="password" name="password" id="pinField" class="wf-input" required>
         </div>
 
-        <button type="submit" class="btn btn-success w-100" data-en="Sign In" data-de="Anmelden">Anmelden</button>
+        <button type="submit" class="wf-btn wf-btn-primary" style="width:100%; padding:10px;" data-en="Sign In" data-de="Anmelden">Anmelden</button>
       </form>
     </div>
+
+    <div class="wf-card" style="margin-top:20px;">
+      <h5 style="margin-bottom:12px;" data-en="Demo Accounts" data-de="Demo-Zugänge">Demo-Zugänge</h5>
+      <table class="wf-table">
+        <thead>
+          <tr>
+            <th data-en="Role" data-de="Rolle">Rolle</th>
+            <th data-en="Username" data-de="Benutzername">Benutzername</th>
+            <th data-en="Password" data-de="Passwort">Passwort</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Employee</td><td>lisa</td><td>1234</td></tr>
+          <tr><td>Employee</td><td>tom</td><td>2345</td></tr>
+          <tr><td>Employee</td><td>klara</td><td>3456</td></tr>
+          <tr><td>Employee</td><td>max</td><td>4567</td></tr>
+          <tr><td>Employee</td><td>anna</td><td>5678</td></tr>
+          <tr><td>HR Admin</td><td>hr</td><td>hr1234</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
+</section>
 {% endblock %}

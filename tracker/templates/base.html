@@ -509,14 +509,29 @@
         body: body,
       });
       var data = await resp.json();
+      var lang = getLang();
       if (!data.ok) {
-        var lang = getLang();
         alert(lang === 'de' ? 'Fehler bei der Verarbeitung.' : 'Failed to process correction.');
         return;
       }
       hideNotificationFromUi(notifId);
       if (notificationModalInstance) notificationModalInstance.hide();
+      var toastMsg;
+      if (decision === 'APPROVE') {
+        toastMsg = lang === 'de' ? 'Anfrage genehmigt.' : 'Request approved.';
+      } else {
+        toastMsg = lang === 'de' ? 'Anfrage abgelehnt.' : 'Request rejected.';
+      }
+      showHrToast(toastMsg);
       fetchNotifications();
+    }
+
+    function showHrToast(msg) {
+      var toast = document.createElement('div');
+      toast.className = 'wf-toast';
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(function() { toast.remove(); }, 3000);
     }
 
     async function doMarkAllRead() {

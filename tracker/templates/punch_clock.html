@@ -89,7 +89,7 @@
       <tbody>
         {% for rec in weekly_records %}
         <tr>
-          <td>{{ rec.date|date:"D, d M" }}</td>
+          <td>{{ rec.date|date:"d.m.Y" }}</td>
           <td>{{ rec.clock_in|date:"H:i"|default:"--" }}</td>
           <td>
             {% if rec.clock_in and not rec.clock_out %}

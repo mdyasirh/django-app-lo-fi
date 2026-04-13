@@ -81,7 +81,7 @@
                 <tbody>
                   {% for rec in emp.records %}
                   <tr>
-                    <td>{{ rec.date|date:"d M Y" }}</td>
+                    <td>{{ rec.date|date:"d.m.Y" }}</td>
                     <td>{{ rec.clock_in|date:"H:i"|default:"--" }}</td>
                     <td>
                       {% if rec.clock_in and not rec.clock_out %}

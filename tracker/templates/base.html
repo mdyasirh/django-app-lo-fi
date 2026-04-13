@@ -455,7 +455,7 @@
       if (isHrCorrection && isDeleteRequest) return { label: lang === 'de' ? 'Löschung' : 'Delete' };
       if (isHrCorrection) return { label: lang === 'de' ? 'Korrektur' : 'Correction' };
       if (notif.notification_type === 'REMINDER') return { label: lang === 'de' ? 'Erinnerung' : 'Reminder' };
-      return { label: 'Info' };
+      return { label: lang === 'de' ? 'Information' : 'Info' };
     }
 
     async function loadNotifications() {
@@ -524,6 +524,7 @@
       }
       showHrToast(toastMsg);
       fetchNotifications();
+      setTimeout(function() { location.reload(); }, 1200);
     }
 
     function showHrToast(msg) {

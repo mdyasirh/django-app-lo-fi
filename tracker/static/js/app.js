@@ -1,9 +1,3 @@
-/**
- * FitLife Studio – app.js
- * Handles language toggle (i18n) via data-attributes.
- * Default language: German (de).
- */
-
 function applyLanguage(lang) {
   document.querySelectorAll('[data-en][data-de]').forEach(function(el) {
     var text = el.getAttribute('data-' + lang);

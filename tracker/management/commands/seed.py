@@ -1,7 +1,3 @@
-"""
-Management command to seed the database with demo data.
-Creates groups, users, employee profiles, and historical time records.
-"""
 import datetime
 import random
 
@@ -18,10 +14,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Seeding database...")
 
-        # Create HR group
         hr_group, _ = Group.objects.get_or_create(name="HR")
 
-        # ---- Users & Profiles ----
         employees_data = [
             {"username": "lisa", "first": "Lisa", "last": "Müller", "pin": "1234", "dept": "Training", "target": 160},
             {"username": "tom", "first": "Tom", "last": "Fischer", "pin": "2345", "dept": "Training", "target": 160},
@@ -54,7 +48,6 @@ class Command(BaseCommand):
             profiles[emp["username"]] = profile
             self.stdout.write(f"  ✓ Employee: {user.get_full_name()} ({emp['username']})")
 
-        # HR user
         hr_user, created = User.objects.get_or_create(
             username="hr",
             defaults={
@@ -74,7 +67,6 @@ class Command(BaseCommand):
         )
         self.stdout.write(f"  ✓ HR User: {hr_user.get_full_name()} (hr / hr1234)")
 
-        # ---- Generate Historical Time Records (20 days) ----
         today = datetime.date.today()
         self.stdout.write("\nGenerating 20 days of historical records...")
 
@@ -82,15 +74,12 @@ class Command(BaseCommand):
             for day_offset in range(1, 21):
                 record_date = today - datetime.timedelta(days=day_offset)
 
-                # Skip weekends
                 if record_date.weekday() >= 5:
                     continue
 
-                # Tom Fischer: skip ~6 days to create > 5h deficit
                 if username == "tom" and day_offset in (2, 4, 6, 8, 10, 12):
                     continue
 
-                # Klara Neumann: work extra-long hours for > 5h overtime
                 if username == "klara":
                     work_hours = random.uniform(9.0, 11.0)
                 else:
@@ -108,7 +97,6 @@ class Command(BaseCommand):
                 total_minutes = int(work_hours * 60) + break_minutes
                 clock_out_dt = clock_in_dt + datetime.timedelta(minutes=total_minutes)
 
-                # Check for existing record before creating
                 if DailyTimeRecord.objects.filter(employee=profile, date=record_date).exists():
                     continue
 

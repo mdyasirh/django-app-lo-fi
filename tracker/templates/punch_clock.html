@@ -89,7 +89,7 @@
       <tbody>
         {% for rec in weekly_records %}
         <tr>
-          <td>{{ rec.date|date:"D, d M" }}</td>
+          <td>{{ rec.date|date:"d.m.Y" }}</td>
           <td>{{ rec.clock_in|date:"H:i"|default:"--" }}</td>
           <td>
             {% if rec.clock_in and not rec.clock_out %}
@@ -184,6 +184,7 @@ var initialClockInIso = '{{ record.clock_in|date:"c"|default:"" }}';
 var initialBreakStartIso = '{{ record.break_start|date:"c"|default:"" }}';
 var initialBreakMinutes = Number('{{ record.total_break_minutes|default:"0" }}') || 0;
 var activeClockInIso = initialClockInIso;
+var activeClockInDisplay = initialClockIn;
 var activeBreakStartIso = initialBreakStartIso;
 var accumulatedBreakMinutes = initialBreakMinutes;
 var accumulatedBreakSeconds = initialBreakMinutes * 60;
@@ -317,6 +318,7 @@ function renderState(status, clockIn) {
     statusArea.innerHTML = '<p class="wf-text-muted" style="font-size:16px;">' + t.notClockedIn + '</p>';
     actionBtns.innerHTML = '<button class="wf-btn wf-btn-primary wf-btn-lg" onclick="doPunch(\'punch-in\')">' + t.start + '</button>';
     activeClockInIso = '';
+    activeClockInDisplay = '';
     activeBreakStartIso = '';
     accumulatedBreakMinutes = 0;
     accumulatedBreakSeconds = 0;
@@ -415,13 +417,13 @@ async function doPunch(action, fromOfflineQueue) {
   if (data.break_min !== undefined) document.getElementById('sumBreak').textContent = data.break_min + ' min';
   if (data.net_hours !== undefined && data.net_hours !== null) document.getElementById('sumNet').textContent = data.net_hours + ' h';
   if (data.clock_in_iso) activeClockInIso = data.clock_in_iso;
+  if (data.clock_in) activeClockInDisplay = data.clock_in;
   if (data.break_min !== undefined) {
     accumulatedBreakMinutes = Number(data.break_min) || 0;
     accumulatedBreakSeconds = Math.max(accumulatedBreakSeconds, accumulatedBreakMinutes * 60);
   }
 
-  var nextClockIn = data.clock_in || initialClockIn;
-  renderState(data.status, nextClockIn);
+  renderState(data.status, activeClockInDisplay);
 
   if (data.status === 'CLOCKED_OUT') {
     document.getElementById('summaryCard').style.display = 'block';

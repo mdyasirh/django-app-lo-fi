@@ -45,8 +45,11 @@
             {% if emp.delta > 0 %}+{% endif %}{{ emp.delta }}
           </td>
           <td>
-            <span id="reviewStatus-{{ emp.hr_review.pk }}" class="wf-badge {% if emp.hr_review.status == 'REVIEWED' %}wf-badge-dark{% else %}wf-badge-light{% endif %}">
-              {{ emp.hr_review.status }}
+            <span id="reviewStatus-{{ emp.hr_review.pk }}" class="wf-badge {% if emp.hr_review.status == 'REVIEWED' %}wf-badge-dark{% else %}wf-badge-light{% endif %}"
+                  data-status-key="{{ emp.hr_review.status }}"
+                  data-de="{% if emp.hr_review.status == 'PENDING' %}Ausstehend{% elif emp.hr_review.status == 'REMINDER_SENT' %}Erinnerung gesendet{% elif emp.hr_review.status == 'REVIEWED' %}Geprüft{% else %}{{ emp.hr_review.status }}{% endif %}"
+                  data-en="{% if emp.hr_review.status == 'PENDING' %}Pending{% elif emp.hr_review.status == 'REMINDER_SENT' %}Reminder Sent{% elif emp.hr_review.status == 'REVIEWED' %}Reviewed{% else %}{{ emp.hr_review.status }}{% endif %}">
+              {% if emp.hr_review.status == 'PENDING' %}Ausstehend{% elif emp.hr_review.status == 'REMINDER_SENT' %}Erinnerung gesendet{% elif emp.hr_review.status == 'REVIEWED' %}Geprüft{% else %}{{ emp.hr_review.status }}{% endif %}
             </span>
           </td>
           <td>
@@ -78,7 +81,7 @@
                 <tbody>
                   {% for rec in emp.records %}
                   <tr>
-                    <td>{{ rec.date|date:"d M Y" }}</td>
+                    <td>{{ rec.date|date:"d.m.Y" }}</td>
                     <td>{{ rec.clock_in|date:"H:i"|default:"--" }}</td>
                     <td>
                       {% if rec.clock_in and not rec.clock_out %}
@@ -89,7 +92,13 @@
                     </td>
                     <td>{{ rec.total_break_minutes }}</td>
                     <td>{{ rec.net_hours|default:"--" }}</td>
-                    <td>{{ rec.status }}</td>
+                    <td>
+                      {% if rec.status == "WORKING" %}<span data-en="Working" data-de="Arbeitet">Arbeitet</span>
+                      {% elif rec.status == "ON_BREAK" %}<span data-en="On Break" data-de="In Pause">In Pause</span>
+                      {% elif rec.status == "CLOCKED_OUT" %}<span data-en="Clocked Out" data-de="Ausgestempelt">Ausgestempelt</span>
+                      {% elif rec.status == "MISSING_CLOCKOUT" %}<span data-en="Missing Clock-out" data-de="Fehlende Ausstempelung">Fehlende Ausstempelung</span>
+                      {% else %}{{ rec.status }}{% endif %}
+                    </td>
                   </tr>
                   {% empty %}
                   <tr>
@@ -163,21 +172,23 @@ async function doSendReminder() {
   });
   var data = await resp.json();
   if (data.ok) {
+    var lang = localStorage.getItem('lang') || 'de';
     var badge = document.getElementById('reviewStatus-' + reviewId);
-    badge.textContent = data.status;
+    badge.textContent = lang === 'de' ? 'Erinnerung gesendet' : 'Reminder Sent';
+    badge.setAttribute('data-de', 'Erinnerung gesendet');
+    badge.setAttribute('data-en', 'Reminder Sent');
+    badge.setAttribute('data-status-key', data.status);
     badge.className = 'wf-badge wf-badge-light';
     var reminderBtn = document.getElementById('reminderBtn-' + reviewId);
     if (reminderBtn) {
-      var lang = localStorage.getItem('lang') || 'de';
       reminderBtn.className = 'wf-btn wf-btn-sm wf-btn-disabled';
-      reminderBtn.textContent = lang === 'de' ? 'Erinnerung gesendet' : 'Reminder sent';
+      reminderBtn.textContent = lang === 'de' ? 'Erinnerung gesendet' : 'Reminder Sent';
       reminderBtn.onclick = function(e) { e.stopPropagation(); };
       reminderBtn.setAttribute('data-de', 'Erinnerung gesendet');
       reminderBtn.setAttribute('data-en', 'Reminder Sent');
     }
     bootstrap.Modal.getInstance(document.getElementById('reminderModal')).hide();
-    var lang2 = localStorage.getItem('lang') || 'de';
-    showToast(lang2 === 'de' ? 'Erinnerung gesendet.' : 'Reminder sent.');
+    showToast(lang === 'de' ? 'Erinnerung gesendet.' : 'Reminder Sent.');
     if (data.warning) showToast(data.warning);
   } else {
     alert(data.error);
@@ -193,8 +204,12 @@ async function doAcknowledge(reviewId) {
   });
   var data = await resp.json();
   if (data.ok) {
+    var lang = localStorage.getItem('lang') || 'de';
     var badge = document.getElementById('reviewStatus-' + reviewId);
-    badge.textContent = data.status;
+    badge.textContent = lang === 'de' ? 'Geprüft' : 'Reviewed';
+    badge.setAttribute('data-de', 'Geprüft');
+    badge.setAttribute('data-en', 'Reviewed');
+    badge.setAttribute('data-status-key', data.status);
     badge.className = 'wf-badge wf-badge-dark';
   } else {
     alert(data.error);

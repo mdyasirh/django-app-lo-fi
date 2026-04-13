@@ -38,7 +38,6 @@ class DailyTimeRecord(models.Model):
 
     @property
     def net_hours(self):
-        """Return net working hours as a float, or None if incomplete."""
         if self.clock_in and self.clock_out:
             delta = (self.clock_out - self.clock_in).total_seconds() / 3600.0
             return round(delta - (self.total_break_minutes / 60.0), 2)

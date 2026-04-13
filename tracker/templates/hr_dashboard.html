@@ -52,7 +52,7 @@
               {% if emp.hr_review.status == 'PENDING' %}Ausstehend{% elif emp.hr_review.status == 'REMINDER_SENT' %}Erinnerung gesendet{% elif emp.hr_review.status == 'REVIEWED' %}Geprüft{% else %}{{ emp.hr_review.status }}{% endif %}
             </span>
           </td>
-          <td>
+          <td style="white-space:nowrap;">
             <button id="reminderBtn-{{ emp.hr_review.pk }}"
                     class="wf-btn wf-btn-sm {% if emp.hr_review.status == 'REMINDER_SENT' %}wf-btn-disabled{% endif %}"
                     onclick="event.stopPropagation(); {% if emp.hr_review.status != 'REMINDER_SENT' %}openReminderModal({{ emp.hr_review.pk }}, '{{ emp.profile }}'){% endif %}"

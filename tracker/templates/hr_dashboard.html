@@ -188,7 +188,7 @@ async function doSendReminder() {
       reminderBtn.setAttribute('data-en', 'Reminder Sent');
     }
     bootstrap.Modal.getInstance(document.getElementById('reminderModal')).hide();
-    showToast(lang === 'de' ? 'Erinnerung gesendet.' : 'Reminder sent.');
+    showToast(lang === 'de' ? 'Erinnerung gesendet.' : 'Reminder Sent.');
     if (data.warning) showToast(data.warning);
   } else {
     alert(data.error);
